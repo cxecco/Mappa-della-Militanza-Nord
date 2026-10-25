@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mappa della Militanza Nord</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;800&display=swap">
+<style>
+:root{--bg:#f2f4f7;--fg:#13202d;--mu:#5d6b7a;--card:#fff;--ln:#d5dce4;--ac:#1d4ed8;--acf:#fff;--ok:#16794a;--okb:#dff3e8;--wa:#7a5200;--wab:#ffe9a8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1720;--fg:#e8edf2;--mu:#98a5b3;--card:#17212c;--ln:#2a3846;--ac:#7aa2ff;--acf:#0b1220;--ok:#74d6a0;--okb:#14301f;--wa:#ffd978;--wab:#3a2e0c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1720;--fg:#e8edf2;--mu:#98a5b3;--card:#17212c;--ln:#2a3846;--ac:#7aa2ff;--acf:#0b1220;--ok:#74d6a0;--okb:#14301f;--wa:#ffd978;--wab:#3a2e0c;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:880px;margin:0 auto;padding:0 18px}
+h1,h2,h3{font-family:Archivo,"Arial Narrow",system-ui,sans-serif;letter-spacing:-.01em}
+h1{font-size:clamp(2rem,6vw,3.1rem);line-height:1.05;font-weight:800;margin:28px 0 6px}
+h2{font-size:1.5rem;font-weight:800;margin:44px 0 12px}
+h3{font-size:1.1rem;font-weight:800;margin:0 0 6px}
+a{color:var(--ac)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--ln);background:var(--card);border-radius:8px;padding:8px 14px;min-height:40px}
+button.p{background:var(--ac);color:var(--acf);border-color:var(--ac);font-weight:600}
+button.g{border:0;background:none;color:var(--ac);padding:4px 8px;min-height:32px}
+button.d{color:#c0392b}
+:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--ln);border-radius:8px;background:var(--card)}
+label{display:block;font-weight:600;font-size:.92rem;margin:12px 0 4px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--ln)}
+.top b{font:800 1.05rem Archivo,system-ui,sans-serif}
+.top nav{display:flex;gap:4px;flex-wrap:wrap}
+.sub{color:var(--mu);max-width:60ch;margin:0 0 18px}
+.bar{display:grid;grid-template-columns:2fr 1fr;gap:10px;margin-top:10px}
+.bar2{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin:12px 0}
+.bar2label{display:flex;align-items:center;gap:6px;font-weight:500;margin:0}
+.bar2label input{width:auto}
+.cnt{font-weight:600;margin:18px 0 4px}
+.ev{display:block;padding:18px 0;border-top:1px solid var(--ln)}
+.ev:last-child{border-bottom:1px solid var(--ln)}
+.dm{font-size:.9rem;color:var(--mu)}
+.ev h3{margin:0 0 4px}
+.meta{color:var(--mu);font-size:.93rem}
+.tag{display:inline-block;font-size:.8rem;font-weight:600;padding:1px 9px;border-radius:99px;border:1px solid var(--ln);margin-right:6px}
+.tag.ok{background:var(--okb);color:var(--ok);border-color:transparent}
+.tag.wa{background:var(--wab);color:var(--wa);border-color:transparent}
+.act{margin-top:8px;display:flex;flex-wrap:wrap;gap:2px}
+.empty{padding:34px 0;border-top:1px solid var(--ln);border-bottom:1px solid var(--ln);color:var(--mu)}
+.empty b{display:block;color:var(--fg);font-size:1.1rem;margin-bottom:4px}
+.info p{max-width:68ch}
+footer{margin:48px 0 32px;padding-top:16px;border-top:1px solid var(--ln);color:var(--mu);font-size:.9rem}
+dialog{border:1px solid var(--ln);border-radius:12px;background:var(--bg);color:var(--fg);padding:20px;width:min(560px,94vw);max-height:92vh}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:2fr 1fr 2fr;gap:10px}
+.btns{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;flex-wrap:wrap}
+.err{color:#c0392b;font-weight:600;min-height:1.3em;margin-top:8px}
+.note{font-size:.88rem;color:var(--mu);margin:4px 0 0}
+.mapw{position:relative;isolation:isolate;margin:10px 0;border:1px solid var(--ln);border-radius:10px;overflow:hidden}
+.map{display:block;width:100%;height:min(66vh,480px);z-index:0}
+.mapf{height:300px}
+.mz{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px}
+.mz button{width:40px;padding:0;font-size:1.3rem;line-height:1}
+.leg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.88rem;margin:0 0 6px}
+.leg i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:-1px;border:1px solid var(--ln)}
+#mapInfo{min-height:1.6em;color:var(--mu);margin-bottom:6px}
+#mapInfo b{color:var(--fg)}
+@media(max-width:600px){.bar{grid-template-columns:1fr}.row3{grid-template-columns:1fr 1fr}.row3>:last-child{grid-column:1/-1}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="top">
+    <b id="brand">Mappa della Militanza Nord</b>
+    <nav>
+      <button class="g" onclick="openAdmin()">Gestisci sito</button>
+    </nav>
+  </div>
+
+  <h1 id="h1">Mappa della Militanza Nord</h1>
+  <p class="sub" id="sub">Movimenti, Collettivi, Centri Sociali, Associazioni, un elenco completo della militanza del Nord Italia.</p>
+
+
+  <h2 style="margin-top:32px">Trova una realtà</h2>
+  <div class="bar">
+    <input id="q" type="search" placeholder="Comune, luogo o nome" aria-label="Cerca per comune, luogo o nome">
+    <select id="fr" aria-label="Regione"><option value="">Tutte le regioni</option></select>
+  </div>
+  <div class="bar2">
+    <select id="ft" aria-label="Tipo" style="width:auto"><option value="">Tutti i tipi</option></select>
+    <span style="flex:1"></span>
+    <button class="p" onclick="openEv()">Aggiungi una Realtà</button>
+  </div>
+
+  <div class="mapw"><div id="mapMain" class="map" role="region" aria-label="Mappa della militanza"></div></div>
+  <div class="leg" id="leg"></div>
+  <div id="mapInfo"></div>
+  <div class="cnt" id="cnt"></div>
+  <div id="list"></div>
+
+  <div class="info">
+    <h2>Come funziona</h2>
+    <p>Chiunque gestisca il sito può aggiungere, correggere o eliminare una realtà. Tocca un punto della mappa, o usa «Aggiungi una Realtà», per iniziare: il luogo si compila da solo.</p>
+    <p><b>Privacy.</b> Il sito non chiede nomi o email di persone. I dati restano salvati nel tuo browser.</p>
+    <p><b>Fonti.</b> Mappa: © contributori OpenStreetMap e © Esri, a seconda dello stile scelto; ricerca dei luoghi: Nominatim.</p>
+    <p><b>Salvataggio.</b> I dati si trovano solo su questo browser. Dal pannello «Gestisci sito» puoi esportarli in un testo da conservare e importarli altrove.</p>
+  </div>
+</div>
+</div>
+
+<dialog id="dEv">
+  <h3 id="evT">Aggiungi una Realtà</h3>
+  <input type="hidden" id="f-id">
+  <label for="f-tipo">Tipo *</label><select id="f-tipo"></select>
+  <label for="f-nome">Nome *</label><input id="f-nome" maxlength="140">
+  <label for="f-social">Social</label>
+  <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px"><select id="f-rete" aria-label="Social"></select><input id="f-social" maxlength="200" placeholder="Profilo o link, per esempio @nome" aria-label="Profilo o link social"></div>
+  <label for="f-cerca">Cerca sulla mappa (indirizzo o luogo)</label>
+  <div style="display:flex;gap:8px"><input id="f-cerca" placeholder="Per esempio: piazza del Duomo, Milano"><button onclick="geo()">Cerca</button></div>
+  <label style="margin-top:14px">Posizione sulla mappa</label>
+  <div class="mapw"><div id="mapForm" class="map mapf" role="region" aria-label="Mappa per scegliere la posizione"></div></div>
+  <div class="note" id="posT">Nessun punto scelto.</div>
+  <p class="note" style="margin-top:2px">Cerca un indirizzo oppure tocca la mappa per mettere il punto: comune, provincia, regione e luogo si compilano da soli.</p>
+  <button class="g" onclick="setFormPos()">Rimuovi il punto</button>
+  <div class="row3">
+    <div><label for="f-com">Comune *</label><input id="f-com"></div>
+    <div><label for="f-prov">Prov.</label><input id="f-prov" maxlength="2"></div>
+    <div><label for="f-reg">Regione *</label><select id="f-reg"></select></div>
+  </div>
+  <label for="f-luogo">Luogo (piazza, via)</label><input id="f-luogo">
+  <label for="f-fonte">Link</label><input id="f-fonte" type="url" placeholder="https://">
+  <div class="err" id="evE" role="alert"></div>
+  <div class="btns"><button onclick="dEv.close()">Annulla</button><button class="p" onclick="saveEv()">Salva</button></div>
+</dialog>
+
+<dialog id="dAd">
+  <h3>Gestisci sito</h3>
+  <label for="a-t">Nome del sito</label><input id="a-t" maxlength="80">
+  <label for="a-s">Sottotitolo</label><textarea id="a-s" rows="3" maxlength="300"></textarea>
+  <div class="btns" style="margin-top:10px"><button class="p" onclick="saveSite()">Salva testi</button></div>
+  <h3 style="margin-top:22px">Copia dei dati</h3>
+  <p class="note">Copia questo testo per conservare tutto. Per ripristinarlo, incollalo qui e premi Importa.</p>
+  <textarea id="a-j" rows="6" spellcheck="false"></textarea>
+  <div class="err" id="aE" role="alert"></div>
+  <div class="btns">
+    <button onclick="copyJ()">Copia</button>
+    <button onclick="impJ()">Importa (sostituisce tutto)</button>
+    <button class="d" id="clr" onclick="clearAll()">Svuota tutto</button>
+    <button onclick="dAd.close()">Chiudi</button>
+  </div>
+</dialog>
+
+<script>
+var KEY="mappa-militanza-nord-v1";
+var TIPI=["Collettivo","Centro Sociale","Associazione","Organizzazione","Partito","Sindacato","Cooperativa","Circolo"];
+var COL={"Collettivo":"#dc2626","Centro Sociale":"#111827","Associazione":"#16a34a","Organizzazione":"#ea580c","Partito":"#2563eb","Sindacato":"#ca8a04","Cooperativa":"#0d9488","Circolo":"#c026d3"};
+var SOC=["Instagram","Facebook","Telegram","WhatsApp","TikTok","YouTube","X","Altro"];
+var REG=["Emilia-Romagna","Friuli-Venezia Giulia","Liguria","Lombardia","Piemonte","Trentino-Alto Adige","Valle d’Aosta","Veneto"];
+var DEF={site:{t:"Mappa della Militanza Nord",s:"Movimenti, Collettivi, Centri Sociali, Associazioni, un elenco completo della militanza del Nord Italia."},
+ events:[],upd:""};
+var S;
+function load(){try{var r=localStorage.getItem(KEY);S=r?JSON.parse(r):null}catch(e){S=null}
+ if(!S||!S.events)S=JSON.parse(JSON.stringify(DEF))}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function safeUrl(u){return /^https?:\/\//i.test(u||"")?u:""}
+function opts(el,arr,first){el.innerHTML=(first?'<option value="">'+first+'</option>':"")+arr.map(function(x){return'<option>'+esc(x)+'</option>'}).join("")}
+
+function render(){
+ $("brand").textContent=$("h1").textContent=S.site.t;$("sub").textContent=S.site.s;document.title=S.site.t;
+ var q=$("q").value.trim().toLowerCase(),r=$("fr").value,t=$("ft").value;
+ var L=S.events.filter(function(e){
+  if(r&&e.reg!==r)return false;if(t&&e.tipo!==t)return false;
+  if(q&&(e.com+" "+e.luogo+" "+e.nome).toLowerCase().indexOf(q)<0)return false;return true})
+  .sort(function(a,b){return (a.nome||"").localeCompare(b.nome||"","it")});
+ var n=L.length;drawMain(L);
+ $("cnt").textContent=n===0?"":(n===1?"1 realtà":n+" realtà");
+ if(!n){
+  $("list").innerHTML=S.events.length
+   ?'<div class="empty"><b>Nessun risultato</b>Prova a cambiare i filtri o la ricerca.</div>'
+   :'<div class="empty"><b>Nessuna realtà in elenco</b>Aggiungi la prima: serve un nome e un punto sulla mappa.</div>';
+ }else{
+  $("list").innerHTML=L.map(function(e){
+   var fu=safeUrl(e.fonte);
+   return'<div class="ev"><div>'+
+   '<div><span class="tag"><i style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;background:'+(COL[e.tipo]||'#1d4ed8')+'"></i>'+esc(e.tipo)+'</span></div>'+
+   '<h3 style="margin-top:6px">'+esc(e.nome)+'</h3>'+
+   '<div class="meta">'+esc(e.com)+(e.prov?" ("+esc(e.prov.toUpperCase())+")":"")+', '+esc(e.reg)+(e.luogo?' · '+esc(e.luogo):"")+'</div>'+
+   (e.social?'<div class="meta">'+esc(e.rete||"Social")+': '+(safeUrl(e.social)?'<a href="'+esc(e.social)+'" target="_blank" rel="noopener noreferrer">'+esc(e.social)+'</a>':esc(e.social))+'</div>':"")+
+   (fu?'<div class="meta"><a href="'+esc(fu)+'" target="_blank" rel="noopener noreferrer">Link</a></div>':"")+
+   '<div class="act"><button class="g" onclick="openEv(\''+e.id+'\')">Modifica</button><button class="g" onclick="dup(\''+e.id+'\')">Duplica</button><button class="g d" onclick="del(this,\''+e.id+'\')">Elimina</button></div></div></div>'}).join("");
+ }
+}
+function two(btn,fn,txt){if(btn.dataset.s){fn();return}btn.dataset.s=1;var o=btn.textContent;btn.textContent="Confermi?";setTimeout(function(){btn.textContent=o;delete btn.dataset.s},3000)}
+function del(b,id){two(b,function(){S.events=S.events.filter(function(e){return e.id!==id});save();render()})}
+function dup(id){var e=S.events.filter(function(x){return x.id===id})[0];if(e){openEv(null,e)}}
+
+function openEv(id,tpl,pos){
+ var e=tpl||S.events.filter(function(x){return x.id===id})[0]||{};
+ $("evT").textContent=id?"Modifica la realtà":"Aggiungi una Realtà";$("evE").textContent="";
+ $("f-id").value=id||"";$("f-tipo").value=e.tipo||TIPI[0];$("f-nome").value=e.nome||"";$("f-rete").value=e.rete||SOC[0];$("f-social").value=e.social||"";
+ $("f-com").value=e.com||"";$("f-prov").value=e.prov||"";$("f-reg").value=e.reg||REG[0];
+ $("f-luogo").value=e.luogo||"";$("f-fonte").value=e.fonte||"";$("f-cerca").value="";
+ var la=pos?pos[0]:e.lat,lo=pos?pos[1]:e.lng;
+ $("dEv").showModal();setFormPos(la,lo);if(pos)rev(la,lo);
+}
+function saveEv(){
+ var o={tipo:$("f-tipo").value,nome:$("f-nome").value.trim(),rete:$("f-rete").value,social:$("f-social").value.trim(),com:$("f-com").value.trim(),prov:$("f-prov").value.trim().toUpperCase(),reg:$("f-reg").value,luogo:$("f-luogo").value.trim(),fonte:$("f-fonte").value.trim(),lat:fLat,lng:fLng};
+ var m="";
+ if(!o.nome)m="Scrivi il nome.";else if(!o.com)m="Scegli un punto sulla mappa o scrivi il comune.";
+ else if(o.fonte&&!safeUrl(o.fonte))m="Il link deve iniziare con http:// o https://.";
+ else if(/[\w.+-]+@[\w-]+\.[\w.]+|\+?\d[\d\s]{8,}/.test(o.nome+" "+o.luogo))m="Togli email o numeri di telefono: non si pubblicano dati personali.";
+ if(m){$("evE").textContent=m;return}
+ var id=$("f-id").value;
+ if(id){S.events=S.events.map(function(e){return e.id===id?Object.assign({id:id},o):e})}else{o.id=uid();S.events.push(o)}
+ save();$("dEv").close();render();
+}
+
+function openAdmin(){$("a-t").value=S.site.t;$("a-s").value=S.site.s;$("a-j").value=JSON.stringify(S);$("aE").textContent="";$("dAd").showModal()}
+function saveSite(){S.site.t=$("a-t").value.trim()||DEF.site.t;S.site.s=$("a-s").value.trim();save();render();$("a-j").value=JSON.stringify(S)}
+function copyJ(){var t=$("a-j");t.select();var ok=false;try{ok=document.execCommand("copy")}catch(e){}
+ try{if(navigator.clipboard){navigator.clipboard.writeText(t.value);ok=true}}catch(e){}
+ $("aE").textContent=ok?"Testo copiato.":"Seleziona il testo e copialo a mano."}
+function impJ(){try{var j=JSON.parse($("a-j").value);if(!j||!Array.isArray(j.events)||!j.site)throw 0;
+ S=j;save();render();$("aE").textContent="Dati importati."}catch(e){$("aE").textContent="Il testo non è valido: incolla una copia esportata da questo sito."}}
+function clearAll(){var b=$("clr");if(b.dataset.s){S=JSON.parse(JSON.stringify(DEF));S.upd="";save();render();$("a-j").value=JSON.stringify(S);$("aE").textContent="Tutto svuotato.";b.textContent="Svuota tutto";delete b.dataset.s;return}
+ b.dataset.s=1;b.textContent="Confermi?";setTimeout(function(){b.textContent="Svuota tutto";delete b.dataset.s},3000)}
+
+load();
+$("leg").innerHTML=TIPI.map(function(t){return'<span><i style="background:'+COL[t]+'"></i>'+esc(t)+'</span>'}).join("");opts($("f-tipo"),TIPI);opts($("f-rete"),SOC);opts($("f-reg"),REG);opts($("fr"),REG,"Tutte le regioni");opts($("ft"),TIPI,"Tutti i tipi");
+/* Mappa OpenStreetMap con Leaflet */
+var OSMA="&copy; contributori <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>";
+var NV=[45.4,10.4],NZ=7;
+function mkMap(id){var m=L.map(id).setView(NV,NZ),web=/^https?:$/.test(location.protocol);
+ var B={"OpenStreetMap":L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:OSMA}),
+  "OpenStreetMap Francia":L.tileLayer("https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png",{subdomains:"abc",maxZoom:19,attribution:OSMA}),
+  "Stradale Esri":L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Tiles &copy; Esri"})};
+ (web?B["OpenStreetMap"]:B["Stradale Esri"]).addTo(m);L.control.layers(B,null).addTo(m);return m}
+function dot(la,lo,t){return L.circleMarker([la,lo],{radius:9,color:"#fff",weight:2,fillColor:COL[t]||"#1d4ed8",fillOpacity:1,bubblingMouseEvents:false})}
+var mMain=mkMap("mapMain"),mainL=L.layerGroup().addTo(mMain),fitted=false;
+var fLat=null,fLng=null,fMk=null,mForm=mkMap("mapForm"),rid=0;
+$("f-tipo").addEventListener("change",function(){if(fLat!==null)setPin(fLat,fLng)});
+function pt(e){return[+e.latlng.lat.toFixed(5),+e.latlng.lng.toFixed(5)]}
+/* clic sulla mappa principale: apre subito il modulo con il luogo già inserito */
+mMain.on("click",function(e){openEv(null,null,pt(e))});
+mForm.on("click",function(e){var p=pt(e);setPin(p[0],p[1]);rev(p[0],p[1])});
+function setPin(la,lo){fLat=la;fLng=lo;if(fMk)mForm.removeLayer(fMk);fMk=dot(la,lo,$("f-tipo").value).addTo(mForm);$("posT").textContent="Punto scelto: "+la.toFixed(4)+", "+lo.toFixed(4)}
+function setFormPos(la,lo){var ok=typeof la==="number";
+ if(ok)setPin(la,lo);else{fLat=fLng=null;if(fMk){mForm.removeLayer(fMk);fMk=null}$("posT").textContent="Nessun punto scelto."}
+ setTimeout(function(){mForm.invalidateSize();if(ok)mForm.setView([la,lo],15);else mForm.setView(NV,NZ)},80)}
+function drawMain(list){mainL.clearLayers();var c=list.filter(function(e){return typeof e.lat==="number"}),b=[];
+ c.forEach(function(e){b.push([e.lat,e.lng]);dot(e.lat,e.lng,e.tipo).addTo(mainL).bindTooltip(esc(e.nome)).on("click",function(){
+  $("mapInfo").innerHTML='<b>'+esc(e.nome)+'</b> · '+esc(e.tipo)+' · '+esc(e.com)+' <button class="g" onclick="openEv(\''+e.id+'\')">Modifica</button>'})});
+ if(b.length&&!fitted){fitted=true;mMain.fitBounds(b,{maxZoom:12,padding:[30,30]})}
+ $("mapInfo").textContent=c.length?"Tocca un punto per vedere i dettagli. Tocca un punto vuoto della mappa per aggiungere una realtà.":"Nessuna realtà in mappa: tocca un punto della mappa per aggiungere la prima."}
+/* compila comune, provincia, regione e luogo dai dati dell'indirizzo */
+function fill(ad){
+ $("f-com").value=ad.city||ad.town||ad.village||ad.municipality||ad.hamlet||"";
+ $("f-prov").value=(ad["ISO3166-2-lvl6"]||"").replace("IT-","");
+ var rg=REG.filter(function(n){return ad.state&&ad.state.indexOf(n.slice(0,6))===0})[0];
+ if(rg)$("f-reg").value=rg;
+ var st=ad.road||ad.pedestrian||ad.square||ad.footway||ad.path||"";
+ $("f-luogo").value=st?(st+(ad.house_number?" "+ad.house_number:"")):(ad.suburb||ad.neighbourhood||"");
+ return !!rg}
+function rev(la,lo){var n=++rid;$("posT").textContent="Cerco l’indirizzo…";
+ fetch("https://nominatim.openstreetmap.org/reverse?format=json&zoom=18&addressdetails=1&accept-language=it&lat="+la+"&lon="+lo).then(function(r){return r.json()}).then(function(x){
+  if(n!==rid)return;
+  if(!x||!x.address){$("posT").textContent="Punto scelto, ma nessun indirizzo trovato: compila i campi a mano.";return}
+  var ok=fill(x.address);
+  $("posT").textContent=ok?"Punto scelto: dati compilati dalla mappa, puoi correggerli.":"Punto scelto, ma la regione non è del Nord: controllala."
+ }).catch(function(){if(n===rid)$("posT").textContent="Punto scelto, ma la ricerca dell’indirizzo non è riuscita: compila i campi a mano."})}
+function geo(){var q=$("f-cerca").value.trim();if(!q)return;$("posT").textContent="Ricerca in corso…";var n=++rid;
+ fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1&countrycodes=it&accept-language=it&q="+encodeURIComponent(q)).then(function(r){return r.json()}).then(function(a){
+  if(n!==rid)return;
+  if(!a.length){$("posT").textContent="Nessun risultato: prova con un indirizzo più preciso o tocca la mappa.";return}
+  var x=a[0],la=+(+x.lat).toFixed(5),lo=+(+x.lon).toFixed(5);
+  setPin(la,lo);mForm.setView([la,lo],16);fill(x.address||{});
+ }).catch(function(){$("posT").textContent="Ricerca non riuscita: controlla la connessione o tocca la mappa."})}
+$("f-cerca").addEventListener("keydown",function(e){if(e.key==="Enter")geo()});
+["q","fr","ft"].forEach(function(i){$(i).addEventListener("input",render)});
+render();
+</script>
+</body>
+</html>
